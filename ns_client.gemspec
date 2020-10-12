@@ -27,4 +27,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "ffaker"
   spec.add_development_dependency "simplecov"
   spec.add_development_dependency "simplecov-console"
+
+  spec.add_runtime_dependency "delivery_boy", ">= 1.0.1"
+  spec.add_runtime_dependency "king_konf", "~> 0.3"
 end
