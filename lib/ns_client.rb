@@ -3,6 +3,7 @@ require 'json'
 require 'ns_client/version'
 require 'ns_client/kafka_client'
 require 'ns_client/configuration'
+require 'ns_client/fake_test'
 
 module NsClient
   class << self
@@ -44,8 +45,6 @@ module NsClient
           JSON.generate(format) + $/
         end
       end
-
-      
     end
 
     attr_writer :logger
@@ -58,6 +57,14 @@ module NsClient
 
     def configure
       yield config
+    end
+
+    def kafka_test!
+      @kafka_client = kafka_testing
+    end
+
+    def kafka_testing
+      @kafka_testing ||= NsClient::FakeTest.new
     end
 
     private
