@@ -82,9 +82,21 @@ NsClient.deliver_async(message, topic: NsClient::Type::TOPICS[:sms])
 
 ## Development
 
-### setup
-this only for unix machine (mac OS or GNU/Linux)
+### Setup
+This only for unix machine (mac OS or GNU/Linux)
 run `./bin/setup`
+
+Always update submodule from hs_protos project
+
+```
+Change directory: $ cd lib/protos
+
+Pull the latest proto files: $ git checkout master && git pull
+
+Back to project's root directory: $ cd -
+
+Commit changes: $ git add lib/protos && git commit
+```
 
 ### Coverage
 - for coverage using simplecov, with minimum coverage 100 %, report will generated during running test
