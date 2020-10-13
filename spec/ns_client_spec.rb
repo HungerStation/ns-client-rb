@@ -18,7 +18,7 @@ RSpec.describe NsClient do
     it "delivers the message using .deliver" do
       creation_time = Time.now
       message = FFaker::Lorem::characters
-      topic = FFaker::Lorem.word
+      topic = NsClient::Type::TOPICS.values.sample
       NsClient.deliver(message, topic: topic, create_time: creation_time)
 
       messages = NsClient.kafka_testing.messages_for(topic)
@@ -34,7 +34,7 @@ RSpec.describe NsClient do
 
       creation_time = Time.now
       message = FFaker::Lorem::characters
-      topic = FFaker::Lorem.word
+      topic = NsClient::Type::TOPICS.values.sample
 
       allow(NsClient).to receive(:kafka_client).and_return(instance)
       allow(instance).to receive(:deliver).and_raise(StandardError)
@@ -54,7 +54,7 @@ RSpec.describe NsClient do
       creation_time_second = Time.now
       message_first = FFaker::Lorem::characters
       message_second = FFaker::Lorem::characters
-      topic = FFaker::Lorem.word
+      topic = NsClient::Type::TOPICS.values.sample
 
       NsClient.deliver_async(message_first, topic: topic, create_time: creation_time_first)
       NsClient.deliver_async(message_second, topic: topic, create_time: creation_time_second)
@@ -78,7 +78,7 @@ RSpec.describe NsClient do
 
       creation_time = Time.now
       message = FFaker::Lorem::characters
-      topic = FFaker::Lorem.word
+      topic = NsClient::Type::TOPICS.values.sample
 
       allow(NsClient).to receive(:kafka_client).and_return(instance)
       allow(NsClient).to receive(:http_client).and_return(http_client)
