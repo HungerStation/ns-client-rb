@@ -5,6 +5,8 @@ require 'ns_client/kafka_client'
 require 'ns_client/http_client'
 require 'ns_client/configuration'
 require 'ns_client/fake_test'
+require 'ns_client/type'
+require 'ns_client/not_supported_topic'
 
 ## proto schema
 require 'protos/notification/sms/sms_pb'
@@ -18,14 +20,14 @@ module NsClient
     def deliver(value, topic:, **options)
       kafka_client.deliver(value, topic: topic, **options)
     rescue StandardError => e
-      logger.error(details: "Error brooooo")
+      logger.error(details: "Message for #{topic} dropped due to #{e.message}")
       http_client.deliver(value, topic: topic) if config.backup_channel
     end
 
     def deliver_async(value, topic:, **options)
       kafka_client.deliver_async(value, topic: topic, **options)
-    rescue Kafka::BufferOverflow
-      logger.error(details: "Message for `#{topic}` dropped due to buffer overflow" )
+    rescue Kafka::BufferOverflow, NsClient::NotSupportedTopic => e
+      logger.error(details: "Message for `#{topic}` dropped due to #{e.message}" )
       http_client.deliver(value, topic: topic) if config.backup_channel
     end
 
