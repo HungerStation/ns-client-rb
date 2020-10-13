@@ -1,4 +1,3 @@
-require 'pry'
 require 'json'
 require 'ns_client/version'
 require 'ns_client/kafka_client'
