@@ -2,8 +2,14 @@ require 'pry'
 require 'json'
 require 'ns_client/version'
 require 'ns_client/kafka_client'
+require 'ns_client/http_client'
 require 'ns_client/configuration'
 require 'ns_client/fake_test'
+
+## proto schema
+require 'protos/notification/sms/sms_pb'
+require 'protos/notification/push/push_pb'
+require 'protos/notification/slack/slack_pb'
 
 module NsClient
   class << self
@@ -31,12 +37,6 @@ module NsClient
     ## setting up logger
     def logger
       @logger ||= Logger.new($stdout).tap do |logger|
-        if config.log_level
-          logger.level = Object.const_get("Logger::#{config.log_level.upcase}")
-        else
-          logger.level = 'INFO'
-        end
-
         logger.formatter = proc do |severity, datetime, _progname, msg|
           format = { level: severity, event_time: datetime.to_s, default_info: msg }
           if msg.is_a? Hash
@@ -51,8 +51,6 @@ module NsClient
 
     def config
       @config ||= NsClient::Configuration.new(env: ENV)
-    rescue KingKonf::ConfigError => e
-      raise ConfigError, e.message
     end
 
     def configure
@@ -67,14 +65,12 @@ module NsClient
       @kafka_testing ||= NsClient::FakeTest.new
     end
 
-    private
-
     def kafka_client
       @kafka_client ||= NsClient::KafkaClient.new(config, logger)
     end
 
     def http_client
-      @http_client ||= NsClient::HttpClient(client, logger)
+      @http_client ||= NsClient::HttpClient.new(config, logger)
     end
   end
 end

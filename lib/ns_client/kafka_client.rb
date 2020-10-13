@@ -20,7 +20,7 @@ module NsClient
     def deliver_async(value, topic:, **options)
       client.deliver_async(value, topic: topic, **options)
     rescue Kafka::BufferOverflow
-      logger.error "Message for `#{topic}` dropped due to buffer overflow"
+      raise Kafka::BufferOverflow
     end
 
     def shutdown

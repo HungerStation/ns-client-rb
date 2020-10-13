@@ -8,6 +8,7 @@ SimpleCov.minimum_coverage(100)
 
 require "bundler/setup"
 require "ns_client"
+require 'ffaker'
 
 RSpec.configure do |config|
   config.after(:suite) do
