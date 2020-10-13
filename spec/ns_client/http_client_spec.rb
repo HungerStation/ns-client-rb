@@ -1,3 +1,5 @@
+require 'spec_helper'
+
 RSpec.describe NsClient::HttpClient do
   before do
     NsClient.configure do |config|

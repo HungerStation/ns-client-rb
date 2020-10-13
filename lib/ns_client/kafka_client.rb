@@ -25,7 +25,7 @@ module NsClient
     def deliver(value, topic:, version: 1, **options)
       validate_topic(topic)
 
-      client.deliver(value.encode, topic: versioned_topic(topic, version), **options)
+      client.deliver(encode_message(value, topic), topic: versioned_topic(topic, version), **options)
     end
 
     # Deliver message Asynchronously
@@ -33,7 +33,7 @@ module NsClient
     # @param topic [String], target topic
     def deliver_async(value, topic:, version: 1, **options)
       validate_topic(topic)
-      client.deliver_async(value.encode, topic: versioned_topic(topic, version), **options)
+      client.deliver_async(encode_message(value, topic), topic: versioned_topic(topic, version), **options)
     rescue Kafka::BufferOverflow
       raise Kafka::BufferOverflow
     end
@@ -57,6 +57,12 @@ module NsClient
     # @return [String] versioned topic
     def versioned_topic(topic, version)
       topic.concat(".#{version}")
+    end
+
+    def encode_message(message, topic)
+      key = NsClient::Type::TOPICS.select{ |key, value| value == topic }.keys&.first
+      proto_class = REQUESTS[key]
+      proto_class.encode(message)
     end
   end
 end

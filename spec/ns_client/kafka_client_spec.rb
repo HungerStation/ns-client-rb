@@ -1,3 +1,5 @@
+require 'spec_helper'
+
 RSpec.describe NsClient::KafkaClient do
 
   let(:kafka_client) { described_class.new(NsClient.config, NsClient.logger) }
@@ -10,11 +12,20 @@ RSpec.describe NsClient::KafkaClient do
 
   describe '.deliver' do
     it 'should deliver message once' do
-      message = FFaker::Lorem::characters
-      topic = NsClient::Type::TOPICS.values.sample
+      key = :slack
+      topic = NsClient::Type::TOPICS[key]
+      payload = Google::Protobuf::Map.new(:string, :string)
+      payload[FFaker::Lorem.word] = FFaker::Lorem.characters
+      proto_class = NsClient::Type::REQUESTS[key]
+      message = proto_class.new
+      message.guid = FFaker::Lorem.word
+      message.title = FFaker::Lorem.characters
+      message.source = FFaker::Lorem.word
+      message.webhook = FFaker::Lorem.word
+
       instance_client = instance_double NsClient::FakeTest
       allow(kafka_client).to receive(:client).and_return(instance_client)
-      expect(instance_client).to receive(:deliver).with(message, topic: topic).exactly(:once)
+      expect(instance_client).to receive(:deliver).with(proto_class.encode(message), topic: topic).exactly(:once)
       kafka_client.deliver(message, topic: topic)
     end
 
@@ -31,20 +42,38 @@ RSpec.describe NsClient::KafkaClient do
 
   describe '.deliver_async' do
     it 'should deliver async message once' do
-      message = FFaker::Lorem::characters
-      topic = NsClient::Type::TOPICS.values.sample
+      key = :slack
+      topic = NsClient::Type::TOPICS[key]
+      payload = Google::Protobuf::Map.new(:string, :string)
+      payload[FFaker::Lorem.word] = FFaker::Lorem.characters
+      proto_class = NsClient::Type::REQUESTS[key]
+      message = proto_class.new
+      message.guid = FFaker::Lorem.word
+      message.title = FFaker::Lorem.characters
+      message.source = FFaker::Lorem.word
+      message.webhook = FFaker::Lorem.word
+
       instance_client = instance_double NsClient::FakeTest
       allow(kafka_client).to receive(:client).and_return(instance_client)
-      expect(instance_client).to receive(:deliver_async).with(message, topic: topic).exactly(:once)
+      expect(instance_client).to receive(:deliver_async).with(proto_class.encode(message), topic: topic).exactly(:once)
       kafka_client.deliver_async(message, topic: topic)
     end
 
     it 'should raise Kafka::BufferOverflow' do
-      message = FFaker::Lorem::characters
-      topic = NsClient::Type::TOPICS.values.sample
+      key = :slack
+      topic = NsClient::Type::TOPICS[key]
+      payload = Google::Protobuf::Map.new(:string, :string)
+      payload[FFaker::Lorem.word] = FFaker::Lorem.characters
+      proto_class = NsClient::Type::REQUESTS[key]
+      message = proto_class.new
+      message.guid = FFaker::Lorem.word
+      message.title = FFaker::Lorem.characters
+      message.source = FFaker::Lorem.word
+      message.webhook = FFaker::Lorem.word
+
       instance_client = instance_double NsClient::FakeTest
       allow(kafka_client).to receive(:client).and_return(instance_client)
-      allow(instance_client).to receive(:deliver_async).with(message, topic: topic).and_raise(Kafka::BufferOverflow)
+      allow(instance_client).to receive(:deliver_async).with(proto_class.encode(message), topic: topic).and_raise(Kafka::BufferOverflow)
       allow(instance_client).to receive(:shutdown)
       expect{
         kafka_client.deliver_async(message, topic: topic)
