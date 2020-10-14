@@ -10,7 +10,7 @@ This clients provides a dead easy way to start publish message to notification s
 Add this line to Gemfile
 
 ```
-gem 'ns_client', git: 'https://github.com/hungerstation/ns-client-rb.git'
+gem 'ns_client', git: 'https://github.com/hungerstation/ns-client-rb.git', submodules: true
 ```
 And then execute:
 
