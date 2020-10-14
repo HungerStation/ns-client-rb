@@ -38,7 +38,7 @@ RSpec.describe NsClient::HttpClient do
         payload = { FFaker::Lorem.characters => FFaker::Lorem.characters }
         response_body = { FFaker::Lorem.characters => FFaker::Lorem.characters }
         response = Typhoeus::Response.new(code: 200, body: response_body.to_json)
-        version = rand(1..3)
+        version = rand(2..5)
         allow(Typhoeus::Response).to receive(:new).and_return(response)
 
         response = http_client.deliver(payload, topic: topic, version: version)
