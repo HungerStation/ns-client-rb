@@ -24,7 +24,6 @@ module NsClient
     # @param topic [String], target topic
     def deliver(value, topic:, version: 1, **options)
       validate_topic(topic)
-
       client.deliver(encode_message(value, topic), topic: versioned_topic(topic, version), **options)
     end
 
@@ -56,7 +55,7 @@ module NsClient
     # @version [Integer], version number
     # @return [String] versioned topic
     def versioned_topic(topic, version)
-      topic.concat(".#{version}")
+      return topic + ".#{version}"
     end
 
     def encode_message(message, topic)
