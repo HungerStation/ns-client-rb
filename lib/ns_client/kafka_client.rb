@@ -32,7 +32,7 @@ module NsClient
     # @param topic [String], target topic
     def deliver_async(value, topic:, version: 1, **options)
       validate_topic(topic)
-      client.deliver_async(encode_message(value, topic), topic: versioned_topic(topic, version), **options)
+      client.deliver_async!(encode_message(value, topic), topic: versioned_topic(topic, version), **options)
     rescue Kafka::BufferOverflow
       raise Kafka::BufferOverflow
     end
