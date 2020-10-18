@@ -55,7 +55,7 @@ RSpec.describe NsClient::KafkaClient do
 
       instance_client = instance_double NsClient::FakeTest
       allow(kafka_client).to receive(:client).and_return(instance_client)
-      expect(instance_client).to receive(:deliver_async).with(proto_class.encode(message), topic: topic + ".1").exactly(:once)
+      expect(instance_client).to receive(:deliver_async!).with(proto_class.encode(message), topic: topic + ".1").exactly(:once)
       kafka_client.deliver_async(message, topic: topic)
     end
 
@@ -73,7 +73,7 @@ RSpec.describe NsClient::KafkaClient do
 
       instance_client = instance_double NsClient::FakeTest
       allow(kafka_client).to receive(:client).and_return(instance_client)
-      allow(instance_client).to receive(:deliver_async).with(proto_class.encode(message), topic: topic + ".1").and_raise(Kafka::BufferOverflow)
+      allow(instance_client).to receive(:deliver_async!).with(proto_class.encode(message), topic: topic + ".1").and_raise(Kafka::BufferOverflow)
       allow(instance_client).to receive(:shutdown)
       expect{
         kafka_client.deliver_async(message, topic: topic)
