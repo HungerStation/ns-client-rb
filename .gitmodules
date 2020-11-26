@@ -1,3 +1,4 @@
+
 [submodule "lib/protos"]
 	path = lib/protos
-	url = https://github.com/HungerStation/ns-client-rb.git
+	url = https://github.com/HungerStation/hs_protos.git
