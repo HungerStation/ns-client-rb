@@ -11,6 +11,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     ansi (1.5.0)
+    byebug (11.1.3)
     coderay (1.1.3)
     delivery_boy (1.0.1)
       king_konf (~> 0.3)
@@ -64,6 +65,7 @@ PLATFORMS
 
 DEPENDENCIES
   bundler (~> 1.17)
+  byebug
   ffaker
   ns_client!
   pry
