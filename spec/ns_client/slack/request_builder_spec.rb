@@ -6,6 +6,7 @@ RSpec.describe NsClient::Slack::RequestBuilder do
   let(:webhook_url) { 'http://example.slack.com' }
   let(:title) { 'A Title' }
   let(:source) { 'default_source' }
+  let(:guid) { SecureRandom.uuid }
   before do
     NsClient.configure do |config|
       config.default_source = source
@@ -17,7 +18,8 @@ RSpec.describe NsClient::Slack::RequestBuilder do
       with_webhook_url(webhook_url).
       with_message(message).
       with_level(level).
-      with_title(title)
+      with_title(title).
+      with_guid(guid)
   end
 
   describe '.build' do
@@ -54,6 +56,12 @@ RSpec.describe NsClient::Slack::RequestBuilder do
   describe '#with_webhook_url' do
     it 'sets webhook URL' do
       expect(subject.request.webhook).to eq webhook_url
+    end
+  end
+
+  describe '#with_guid' do
+    it 'sets guid' do
+      expect(subject.request.guid).to eq guid
     end
   end
 

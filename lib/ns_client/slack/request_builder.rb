@@ -35,6 +35,11 @@ module NsClient::Slack
       self
     end
 
+    def with_guid(guid)
+      @request.guid = guid
+      self
+    end
+
     def with_message(msg)
       @request.payload ||= Google::Protobuf::Map.new(:string, :string)
       @request.payload['message'] = msg
