@@ -56,5 +56,6 @@ module NsClient
 
     boolean :backup_channel, default: false
     string :backup_url
+    string :default_source, required: true
   end
 end
