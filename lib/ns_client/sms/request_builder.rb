@@ -12,7 +12,7 @@ module NsClient::Sms
       @request = Protos::Notification::Sms::Request.new
       @request.guid = SecureRandom.uuid
       @request.source = NsClient.config.default_source
-      @request.sms_type = :DEFAULT
+      @request.sms_type = Protos::Notification::Sms::Request::SmsType::DEFAULT
       @request.event_timestamp = Time.now
     end
     
