@@ -6,6 +6,8 @@ require 'ns_client/configuration'
 require 'ns_client/fake_test'
 require 'ns_client/type'
 require 'ns_client/not_supported_topic'
+require 'ns_client/missing_required_field'
+require 'ns_client/slack/request_builder'
 
 ## proto schema
 require 'protos/notification/sms/sms_pb'

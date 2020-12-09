@@ -19,26 +19,32 @@ And then execute:
 Or install it yourself as:
 
     $ gem install ns_redis
-    
+
 ## Usage
 ### Configuration
 Create `ns_client.rb` config in initializer folder
 
-```
+```ruby
 NsClient.configure do |config|
-	brokers = ["kafka_broker_1","kafka_broker_2", "kafka_broker_3"]
-	required_acks = -1 # leader and all replicas should aknowledge the message
-	max_retries = 2 # The number of retries when attempting to deliver messages
-	retry_backoff = 1 # The number of seconds to wait after a failed attempt to send messages to a Kafka broker before retrying
+  config.brokers = ["kafka_broker_1","kafka_broker_2", "kafka_broker_3"]
+  config.required_acks = -1 # leader and all replicas should aknowledge the message
+  config.max_retries = 2 # The number of retries when attempting to deliver messages
+  config.retry_backoff = 1 # The number of seconds to wait after a failed attempt to send messages to a Kafka broker before retrying
+  config.backup_url = 'http://notification-service.hungerstation.com' # Notification Service REST API serves as a fallback when unable to produce message to Kafka
+
+  # configure TLS
+  config.ssl_ca_cert = '...'
+  config.ssl_client_cert = '...'
+  config.ssl_client_cert_key = '...'
 end
 ```
 
 ### Deliver Message
-For delivering message is straight forward, 
+For delivering message is straight forward,
 
-Construct the message using one of the following models :
+Construct the message using one of the following models:
 
-```
+```ruby
 Protos::Notification::Sms.Request
 (<Protos::Notification::Sms::Request: guid: "", title: "", source: "", recipient: "", sms_type: :DEFAULT, payload: {}, event_timestamp: nil>)
 
@@ -53,31 +59,40 @@ Protos::Notification::Slack.Request
 
 Then define the topic using one the following topic
 
-```
+```ruby
 NsClient::Type::TOPICS[:sms] ## for SMS
 NsClient::Type::TOPICS[:push] ## for push notificatio
 NsClient::Type::TOPICS[:email] ## for email
 NsClient::Type::TOPICS[:slack] ## for slack
 ```
 
-Complete example :
+Complete example:
 
-```
+```ruby
+payload = Google::Protobuf::Map.new(:string, :string)
+payload['message'] = "This is for testing purpose"
 message = Protos::Notification::Sms::Request.new
 message.guid = "GENERATED ID"
 message.title = "notification.sms.registration"
 message.source = "platform.otp"
 message.recipient = "+96645670982"
 message.sms_type = :DEFAULT
-payload = { message: "This is for testing purpose" }
-event_timestamp = Time.now
+message.payload = payload
+message.event_timestamp = Time.now
 
 ## to deliver synchronously
 NsClient.deliver(message, topic: NsClient::Type::TOPICS[:sms])
 
 ## to deliver Asynchronously
 NsClient.deliver_async(message, topic: NsClient::Type::TOPICS[:sms])
+```
 
+Or use the builder:
+
+```ruby
+builder = NsClient::Slack::RequestBuilder.build.set_webhook_url(url).set_message(message)
+builder.deliver
+# or builder.deliver_async
 ```
 
 ## Development
@@ -102,7 +117,7 @@ Commit changes: $ git add lib/protos && git commit
 - for coverage using simplecov, with minimum coverage 100 %, report will generated during running test
 
 ### running test
-```rspec spec```
+```bundle exec rspec```
 will produce test result with coverage statistic
 
 
