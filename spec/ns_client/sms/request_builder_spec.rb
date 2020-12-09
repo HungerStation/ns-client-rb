@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-RSpec.describe NsClient::Slack::RequestBuilder do
+RSpec.describe NsClient::Sms::RequestBuilder do
   let(:message) { 'hello' }
-  let(:level) { :INFO }
-  let(:webhook_url) { 'http://example.slack.com' }
+  let(:type) { Protos::Notification::Sms::Request::SmsType::DEFAULT }
+  let(:recipient) { '+966789789789' }
   let(:title) { 'A Title' }
   let(:source) { 'default_source' }
   let(:guid) { SecureRandom.uuid }
@@ -14,10 +14,10 @@ RSpec.describe NsClient::Slack::RequestBuilder do
   end
 
   subject do
-    NsClient::Slack::RequestBuilder.build.
-      with_webhook_url(webhook_url).
+    NsClient::Sms::RequestBuilder.build.
+      with_recipient(recipient).
       with_message(message).
-      with_level(level).
+      with_type(type).
       with_title(title).
       with_guid(guid)
   end
@@ -53,9 +53,9 @@ RSpec.describe NsClient::Slack::RequestBuilder do
     end
   end
 
-  describe '#with_webhook_url' do
-    it 'sets webhook URL' do
-      expect(subject.request.webhook).to eq webhook_url
+  describe '#with_recipient' do
+    it 'sets recipeint' do
+      expect(subject.request.recipient).to eq recipient
     end
   end
 
@@ -65,9 +65,9 @@ RSpec.describe NsClient::Slack::RequestBuilder do
     end
   end
 
-  describe '#with_level' do
-    it 'sets severity level' do
-      expect(subject.request.level).to eq level
+  describe '#with_type' do
+    it 'sets sms type' do
+      expect(subject.request.sms_type).to eq :DEFAULT
     end
   end
 
@@ -79,7 +79,7 @@ RSpec.describe NsClient::Slack::RequestBuilder do
 
   describe '#deliver' do
     before do
-      expect(NsClient).to receive(:deliver).with(subject.request, topic: NsClient::Type::TOPICS[:slack])
+      expect(NsClient).to receive(:deliver).with(subject.request, topic: NsClient::Type::TOPICS[:sms])
     end
 
     it 'calls NsClient.deliver with request object' do
@@ -89,7 +89,7 @@ RSpec.describe NsClient::Slack::RequestBuilder do
 
   describe '#deliver_async' do
     before do
-      expect(NsClient).to receive(:deliver_async).with(subject.request, topic: NsClient::Type::TOPICS[:slack])
+      expect(NsClient).to receive(:deliver_async).with(subject.request, topic: NsClient::Type::TOPICS[:sms])
     end
 
     it 'calls NsClient.deliver with request object' do
@@ -97,8 +97,8 @@ RSpec.describe NsClient::Slack::RequestBuilder do
     end
   end
 
-  context 'when webhook_url does not present' do
-    let(:webhook_url) { '' }
+  context 'when recipient does not present' do
+    let(:recipient) { '' }
 
     it 'raises MissingRequiredField error' do
       expect { subject.deliver }.to raise_error NsClient::MissingRequiredField

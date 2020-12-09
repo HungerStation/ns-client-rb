@@ -1,20 +1,21 @@
 require 'securerandom'
 
-module NsClient::Slack
+module NsClient::Sms
   class RequestBuilder
     attr_reader :request
-
+    
     def self.build
       new
     end
 
     def initialize
-      @request = Protos::Notification::Slack::Request.new
+      @request = Protos::Notification::Sms::Request.new
       @request.guid = SecureRandom.uuid
       @request.source = NsClient.config.default_source
+      @request.sms_type = Protos::Notification::Sms::Request::SmsType::DEFAULT
       @request.event_timestamp = Time.now
     end
-
+    
     def with_title(title)
       @request.title = title
       self
@@ -25,16 +26,16 @@ module NsClient::Slack
       self
     end
 
-    def with_level(level)
-      @request.level = level
+    def with_recipient(recipient)
+      @request.recipient = recipient
       self
     end
 
-    def with_webhook_url(url)
-      @request.webhook = url
+    def with_type(type)
+      @request.sms_type = type
       self
     end
-
+    
     def with_guid(guid)
       @request.guid = guid
       self
@@ -48,12 +49,12 @@ module NsClient::Slack
 
     def deliver
       validate!
-      NsClient.deliver(@request, topic: NsClient::Type::TOPICS[:slack])
+      NsClient.deliver(@request, topic: NsClient::Type::TOPICS[:sms])
     end
 
     def deliver_async
       validate!
-      NsClient.deliver_async(@request, topic: NsClient::Type::TOPICS[:slack])
+      NsClient.deliver_async(@request, topic: NsClient::Type::TOPICS[:sms])
     end
 
     private
@@ -61,11 +62,12 @@ module NsClient::Slack
     def validate!
       missing_fields = []
       missing_fields << :message unless @request.payload['message']&.size > 0
-      missing_fields << :webhook_url unless @request.webhook&.size > 0
+      missing_fields << :recipient unless @request.recipient&.size > 0
 
       unless missing_fields.empty?
         raise NsClient::MissingRequiredField, "missing required fields: #{missing_fields.join(', ')}"
       end
     end
+
   end
 end
