@@ -90,8 +90,15 @@ NsClient.deliver_async(message, topic: NsClient::Type::TOPICS[:sms])
 Or use the builder:
 
 ```ruby
-builder = NsClient::Slack::RequestBuilder.build.set_webhook_url(url).set_message(message)
-builder.deliver
+attachment_builder = NsClient::Slack::AttachmentBuilder.build.
+  set_title(title).
+  add_field('field1', 'value')
+
+request_builder = NsClient::Slack::RequestBuilder.build.
+  set_webhook_url(url).
+  set_message(message).
+  add_attachment(attachment_builder.attachment)
+request_builder.deliver
 # or builder.deliver_async
 ```
 

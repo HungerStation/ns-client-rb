@@ -1,7 +1,9 @@
 require 'spec_helper'
 
 RSpec.describe NsClient::Slack::RequestBuilder do
-  let(:message) { 'hello' }
+  let(:text) { 'hello' }
+  let(:attachment_title) { 'Attachment Title' }
+  let(:attachment) { Protos::Notification::Slack::Request::Attachment.new(title: attachment_title) }
   let(:level) { :INFO }
   let(:webhook_url) { 'http://example.slack.com' }
   let(:title) { 'A Title' }
@@ -16,7 +18,8 @@ RSpec.describe NsClient::Slack::RequestBuilder do
   subject do
     NsClient::Slack::RequestBuilder.build.
       with_webhook_url(webhook_url).
-      with_message(message).
+      with_text(text).
+      add_attachment(attachment).
       with_level(level).
       with_title(title).
       with_guid(guid)
@@ -71,9 +74,21 @@ RSpec.describe NsClient::Slack::RequestBuilder do
     end
   end
 
-  describe '#with_message' do
-    it 'sets message in payload' do
-      expect(subject.request.payload['message']).to eq message
+  describe '#with_text' do
+    it 'sets text in payload' do
+      expect(subject.request.payload.text).to eq text
+    end
+  end
+
+  describe '#add_attachment' do
+    it 'sets attachment fields correctly' do
+      expect(subject.request.payload.attachments[0].title).to eq attachment_title
+    end
+
+    it 'appends new attachment' do
+      expect {
+        subject.add_attachment(attachment)
+    }.to change { subject.request.payload.attachments.size }.by 1
     end
   end
 

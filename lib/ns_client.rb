@@ -8,6 +8,7 @@ require 'ns_client/type'
 require 'ns_client/not_supported_topic'
 require 'ns_client/missing_required_field'
 require 'ns_client/slack/request_builder'
+require 'ns_client/slack/attachment_builder'
 require 'ns_client/sms/request_builder'
 
 ## proto schema
