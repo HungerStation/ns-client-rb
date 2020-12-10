@@ -40,9 +40,16 @@ module NsClient::Slack
       self
     end
 
-    def with_message(msg)
-      @request.payload ||= Google::Protobuf::Map.new(:string, :string)
-      @request.payload['message'] = msg
+    def with_text(text)
+      @request.payload ||= Protos::Notification::Slack::Request::Message.new
+      @request.payload.text = text
+      self
+    end
+
+    def add_attachment(attachment)
+      @request.payload ||= Protos::Notification::Slack::Request::Message.new
+      @request.payload.attachments ||= Google::Protobuf::RepeatedField.new(Protos::Notification::Slack::Request::Attachment)
+      @request.payload.attachments += [attachment]
       self
     end
 
@@ -60,7 +67,7 @@ module NsClient::Slack
 
     def validate!
       missing_fields = []
-      missing_fields << :message unless @request.payload['message']&.size > 0
+      missing_fields << :message unless @request.payload.text&.size > 0
       missing_fields << :webhook_url unless @request.webhook&.size > 0
 
       unless missing_fields.empty?
