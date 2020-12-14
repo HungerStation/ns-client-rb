@@ -2,6 +2,10 @@ require 'spec_helper'
 
 RSpec.describe NsClient::Slack::RequestBuilder do
   let(:text) { 'hello' }
+  let(:channel) { '#random' }
+  let(:username) { 'hungerstationbot' }
+  let(:icon_emoji) { '⚠️' }
+  let(:icon_url) { 'http://example.com/icon.png' }
   let(:attachment_title) { 'Attachment Title' }
   let(:attachment) { Protos::Notification::Slack::Request::Attachment.new(title: attachment_title) }
   let(:level) { :INFO }
@@ -19,6 +23,10 @@ RSpec.describe NsClient::Slack::RequestBuilder do
     NsClient::Slack::RequestBuilder.build.
       with_webhook_url(webhook_url).
       with_text(text).
+      with_channel(channel).
+      with_username(username).
+      with_icon_emoji(icon_emoji).
+      with_icon_url(icon_url).
       add_attachment(attachment).
       with_level(level).
       with_title(title).
@@ -77,6 +85,30 @@ RSpec.describe NsClient::Slack::RequestBuilder do
   describe '#with_text' do
     it 'sets text in payload' do
       expect(subject.request.payload.text).to eq text
+    end
+  end
+
+  describe '#with_channel' do
+    it 'sets channel in payload' do
+      expect(subject.request.payload.channel).to eq channel
+    end
+  end
+
+  describe '#with_username' do
+    it 'sets username in payload' do
+      expect(subject.request.payload.username).to eq username
+    end
+  end
+
+  describe '#with_icon_emoji' do
+    it 'sets icon emoji in payload' do
+      expect(subject.request.payload.icon_emoji).to eq icon_emoji
+    end
+  end
+
+  describe '#with_icon_url' do
+    it 'sets icon URL in payload' do
+      expect(subject.request.payload.icon_url).to eq icon_url
     end
   end
 

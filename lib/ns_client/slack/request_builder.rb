@@ -46,6 +46,30 @@ module NsClient::Slack
       self
     end
 
+    def with_channel(channel)
+      @request.payload ||= Protos::Notification::Slack::Request::Message.new
+      @request.payload.channel = channel
+      self
+    end
+
+    def with_username(username)
+      @request.payload ||= Protos::Notification::Slack::Request::Message.new
+      @request.payload.username = username
+      self
+    end
+
+    def with_icon_emoji(icon_emoji)
+      @request.payload ||= Protos::Notification::Slack::Request::Message.new
+      @request.payload.icon_emoji = icon_emoji
+      self
+    end
+
+    def with_icon_url(icon_url)
+      @request.payload ||= Protos::Notification::Slack::Request::Message.new
+      @request.payload.icon_url = icon_url
+      self
+    end
+
     def add_attachment(attachment)
       @request.payload ||= Protos::Notification::Slack::Request::Message.new
       @request.payload.attachments ||= Google::Protobuf::RepeatedField.new(Protos::Notification::Slack::Request::Attachment)
