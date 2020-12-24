@@ -1,6 +1,7 @@
 require 'json'
 require 'ns_client/version'
 require 'ns_client/kafka_client'
+require 'ns_client/google_pubsub_client'
 require 'ns_client/http_client'
 require 'ns_client/configuration'
 require 'ns_client/fake_test'
@@ -31,6 +32,14 @@ module NsClient
       kafka_client.deliver_async(value, topic: topic, **options)
     rescue Kafka::BufferOverflow, NsClient::NotSupportedTopic => e
       logger.error(details: "Message for `#{topic}` dropped due to #{e.message}" )
+      http_client.deliver(value, topic: topic) if config.backup_channel
+    end
+
+    ## for google pubsub transaction
+    def deliver_pubsub(value, topic:, **options)
+      pubsub_client.deliver(value, topic: topic, **options)
+    rescue StandardError => e
+      logger.error(details: "Message for #{topic} dropped due to #{e.message}")
       http_client.deliver(value, topic: topic) if config.backup_channel
     end
 
@@ -76,6 +85,10 @@ module NsClient
 
     def http_client
       @http_client ||= NsClient::HttpClient.new(config, logger)
+    end
+
+    def pubsub_client
+      @pubsub_client ||= NsClient::GooglePubsubClient.new(config, logger)
     end
   end
 end

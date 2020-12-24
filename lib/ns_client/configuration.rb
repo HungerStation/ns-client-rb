@@ -57,5 +57,9 @@ module NsClient
     boolean :backup_channel, default: false
     string :backup_url
     string :default_source, required: true
+
+    ## google pubsub mininum config
+    string :project_id, required: true
+    string :credential
   end
 end
