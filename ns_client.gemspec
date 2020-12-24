@@ -33,6 +33,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "king_konf", "~> 0.3"
   spec.add_runtime_dependency "google-protobuf"
   spec.add_runtime_dependency "typhoeus"
+  spec.add_runtime_dependency "google-cloud-pubsub"
 
 
   gem_dir = File.expand_path(File.dirname(__FILE__)) + "/"
