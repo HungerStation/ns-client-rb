@@ -1,5 +1,5 @@
 module NsClient::Push
-  class RequestBuilder
+  class AndroidRequestBuilder
     attr_reader :request
 
     def self.build
@@ -7,10 +7,12 @@ module NsClient::Push
     end
 
     def initialize
-      @request = Protos::Notification::Push::Request.new
+      @request = Protos::Notification::Push::Android::Request.new
       @request.guid = SecureRandom.uuid
       @request.source = NsClient.config.default_source
       @request.event_timestamp = Time.now
+      @request.payload = Protos::Notification::Push::Android::Request::Message.new
+      @request.payload.priority = Protos::Notification::Push::Android::Request::Priority::NORMAL
     end
 
     def with_title(title)
@@ -29,10 +31,25 @@ module NsClient::Push
       self
     end
 
-    def with_payload(payload)
-      @request.payload ||= Google::Protobuf::Map.new(:string, :string)
-      payload.each do |key, val|
-        @request.payload[key] = val
+    def with_topic(topic)
+      @request.payload.topic = topic
+      self
+    end
+
+    def with_collapse_key(key)
+      @request.payload.collapse_key = key
+      self
+    end
+
+    def with_priority(priority)
+      @request.payload.priority = priority
+      self
+    end
+
+    def with_data(data)
+      @request.payload.data ||= Google::Protobuf::Map.new(:string, :string)
+      data.each do |key, val|
+        @request.payload.data[key] = val
       end
       self
     end
@@ -43,8 +60,8 @@ module NsClient::Push
     end
 
     def with_message(msg)
-      @request.payload ||= Google::Protobuf::Map.new(:string, :string)
-      @request.payload['message'] = msg
+      @request.payload.data ||= Google::Protobuf::Map.new(:string, :string)
+      @request.payload.data['message'] = msg
       self
     end
 

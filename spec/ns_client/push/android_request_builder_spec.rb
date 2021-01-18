@@ -1,9 +1,11 @@
 require 'spec_helper'
 
-RSpec.describe NsClient::Push::RequestBuilder do
-  let(:payload) { { uri: 'hungerstation://?c=foo&s=o&id=123' } }
+RSpec.describe NsClient::Push::AndroidRequestBuilder do
+  let(:data) { { uri: 'hungerstation://?c=foo&s=o&id=123' } }
   let(:title) { 'A Title' }
   let(:source) { 'default_source' }
+  let(:topic) { 'some_topic' }
+  let(:collapse_key) { 'collapse.key' }
   let(:guid) { SecureRandom.uuid }
   let(:tokens) { ['b9d81bef-c813-4f51-a7c6-be2042093720'] }
   before do
@@ -13,8 +15,10 @@ RSpec.describe NsClient::Push::RequestBuilder do
   end
 
   subject do
-    NsClient::Push::RequestBuilder.build.
-      with_payload(payload).
+    NsClient::Push::AndroidRequestBuilder.build.
+      with_data(data).
+      with_topic(topic).
+      with_collapse_key(collapse_key).
       with_tokens(tokens).
       with_title(title).
       with_guid(guid)
@@ -63,9 +67,32 @@ RSpec.describe NsClient::Push::RequestBuilder do
     end
   end
 
-  describe '#with_payload' do
+  describe '#with_topic' do
+    it 'sets topic' do
+      expect(subject.request.payload.topic).to eq topic
+    end
+  end
+
+  describe '#with_collapse_key' do
+    it 'sets collapse key' do
+      expect(subject.request.payload.collapse_key).to eq collapse_key
+    end
+  end
+
+  describe '#with_priority' do
+    let(:priority) { :HIGH }
+    before do
+      subject.with_priority(priority)
+    end
+
+    it 'sets priority' do
+      expect(subject.request.payload.priority).to eq priority
+    end
+  end
+
+  describe '#with_data' do
     it 'sets payload data' do
-      expect(subject.request.payload).to eq payload
+      expect(subject.request.payload.data).to eq data
     end
   end
 
@@ -75,8 +102,8 @@ RSpec.describe NsClient::Push::RequestBuilder do
       subject.with_message(message)
     end
 
-    it 'sets message in payload' do
-      expect(subject.request.payload['message']).to eq message
+    it 'sets message in payload data' do
+      expect(subject.request.payload.data['message']).to eq message
     end
   end
 
