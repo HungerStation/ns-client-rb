@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-RSpec.describe NsClient::Push::AndroidRequestBuilder do
-  let(:data) { { uri: 'hungerstation://?c=foo&s=o&id=123' } }
+RSpec.describe NsClient::Push::IosRequestBuilder do
+  let(:custom_data) { { uri: 'hungerstation://?c=foo&s=o&id=123' } }
   let(:title) { 'A Title' }
   let(:source) { 'default_source' }
   let(:topic) { 'some_topic' }
-  let(:collapse_key) { 'collapse.key' }
+  let(:collapse_id) { 'collapse.id' }
   let(:guid) { SecureRandom.uuid }
   let(:tokens) { ['b9d81bef-c813-4f51-a7c6-be2042093720'] }
   before do
@@ -15,10 +15,10 @@ RSpec.describe NsClient::Push::AndroidRequestBuilder do
   end
 
   subject do
-    NsClient::Push::AndroidRequestBuilder.build.
-      with_data(data).
+    NsClient::Push::IosRequestBuilder.build.
+      with_custom_data(custom_data).
       with_topic(topic).
-      with_collapse_key(collapse_key).
+      with_collapse_id(collapse_id).
       with_tokens(tokens).
       with_title(title).
       with_guid(guid)
@@ -35,6 +35,10 @@ RSpec.describe NsClient::Push::AndroidRequestBuilder do
 
     it 'sets source with default_source' do
       expect(subject.request.source).to eq source
+    end
+
+    it 'sets priority to low (default)' do
+      expect(subject.request.payload.priority).to eq :LOW
     end
   end
 
@@ -73,9 +77,9 @@ RSpec.describe NsClient::Push::AndroidRequestBuilder do
     end
   end
 
-  describe '#with_collapse_key' do
-    it 'sets collapse key' do
-      expect(subject.request.payload.collapse_key).to eq collapse_key
+  describe '#with_collapse_id' do
+    it 'sets collapse id' do
+      expect(subject.request.payload.collapse_id).to eq collapse_id
     end
   end
 
@@ -90,9 +94,9 @@ RSpec.describe NsClient::Push::AndroidRequestBuilder do
     end
   end
 
-  describe '#with_data' do
-    it 'sets payload data' do
-      expect(subject.request.payload.data).to eq data
+  describe '#with_custom_data' do
+    it 'sets payload custom data' do
+      expect(subject.request.payload.custom).to eq custom_data
     end
   end
 
@@ -103,13 +107,13 @@ RSpec.describe NsClient::Push::AndroidRequestBuilder do
     end
 
     it 'sets message in payload data' do
-      expect(subject.request.payload.data['message']).to eq message
+      expect(subject.request.payload.custom['message']).to eq message
     end
   end
 
   describe '#deliver' do
     before do
-      expect(NsClient).to receive(:deliver).with(subject.request, topic: NsClient::Type::TOPICS[:push_android])
+      expect(NsClient).to receive(:deliver).with(subject.request, topic: NsClient::Type::TOPICS[:push_ios])
     end
 
     it 'calls NsClient.deliver with request object' do
@@ -119,7 +123,7 @@ RSpec.describe NsClient::Push::AndroidRequestBuilder do
 
   describe '#deliver_async' do
     before do
-      expect(NsClient).to receive(:deliver_async).with(subject.request, topic: NsClient::Type::TOPICS[:push_android])
+      expect(NsClient).to receive(:deliver_async).with(subject.request, topic: NsClient::Type::TOPICS[:push_ios])
     end
 
     it 'calls NsClient.deliver with request object' do

@@ -11,6 +11,7 @@ require 'ns_client/slack/request_builder'
 require 'ns_client/slack/attachment_builder'
 require 'ns_client/sms/request_builder'
 require 'ns_client/push/android_request_builder'
+require 'ns_client/push/ios_request_builder'
 
 ## proto schema
 require 'protos/notification/sms/sms_pb'

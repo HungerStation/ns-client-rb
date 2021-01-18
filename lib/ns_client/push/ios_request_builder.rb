@@ -1,5 +1,5 @@
 module NsClient::Push
-  class AndroidRequestBuilder
+  class IosRequestBuilder
     attr_reader :request
 
     def self.build
@@ -7,12 +7,12 @@ module NsClient::Push
     end
 
     def initialize
-      @request = Protos::Notification::Push::Android::Request.new
+      @request = Protos::Notification::Push::Ios::Request.new
       @request.guid = SecureRandom.uuid
       @request.source = NsClient.config.default_source
       @request.event_timestamp = Time.now
-      @request.payload = Protos::Notification::Push::Android::Request::Message.new
-      @request.payload.priority = Protos::Notification::Push::Android::Request::Priority::NORMAL
+      @request.payload = Protos::Notification::Push::Ios::Request::Message.new
+      @request.payload.priority = Protos::Notification::Push::Ios::Request::Priority::LOW
     end
 
     def with_title(title)
@@ -36,8 +36,8 @@ module NsClient::Push
       self
     end
 
-    def with_collapse_key(key)
-      @request.payload.collapse_key = key
+    def with_collapse_id(id)
+      @request.payload.collapse_id = id
       self
     end
 
@@ -46,10 +46,10 @@ module NsClient::Push
       self
     end
 
-    def with_data(data)
-      @request.payload.data ||= Google::Protobuf::Map.new(:string, :string)
+    def with_custom_data(data)
+      @request.payload.custom ||= Google::Protobuf::Map.new(:string, :string)
       data.each do |key, val|
-        @request.payload.data[key] = val
+        @request.payload.custom[key] = val
       end
       self
     end
@@ -60,19 +60,19 @@ module NsClient::Push
     end
 
     def with_message(msg)
-      @request.payload.data ||= Google::Protobuf::Map.new(:string, :string)
-      @request.payload.data['message'] = msg
+      @request.payload.custom ||= Google::Protobuf::Map.new(:string, :string)
+      @request.payload.custom['message'] = msg
       self
     end
 
     def deliver
       validate!
-      NsClient.deliver(@request, topic: NsClient::Type::TOPICS[:push_android])
+      NsClient.deliver(@request, topic: NsClient::Type::TOPICS[:push_ios])
     end
 
     def deliver_async
       validate!
-      NsClient.deliver_async(@request, topic: NsClient::Type::TOPICS[:push_android])
+      NsClient.deliver_async(@request, topic: NsClient::Type::TOPICS[:push_ios])
     end
 
     private
