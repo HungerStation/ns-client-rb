@@ -87,6 +87,11 @@ module NsClient::Slack
       NsClient.deliver_async(@request, topic: NsClient::Type::TOPICS[:slack])
     end
 
+    def deliver_pubsub
+      validate!
+      NsClient.deliver_pubsub(@request, topic: NsClient::Type::TOPICS[:slack])
+    end
+
     private
 
     def validate!
