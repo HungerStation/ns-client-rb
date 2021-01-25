@@ -97,4 +97,43 @@ RSpec.describe NsClient do
       expect(NsClient.config.is_a? NsClient::Configuration).to eq true
     end
   end
+
+  describe "pubsub_client" do
+    it 'should return NsClient::GooglePubsubClient' do
+      expect(NsClient.pubsub_client.is_a? NsClient::GooglePubsubClient).to eq true    
+    end
+  end
+
+  describe ".deliver_pubsub" do
+    it "delivers the message using .deliver_pubsub" do
+      creation_time = Time.now
+      message = FFaker::Lorem::characters
+      topic = NsClient::Type::TOPICS.values.sample
+
+      credential = instance_double Google::Auth::Credentials
+      allow(Google::Cloud::PubSub).to receive(:default_credentials).and_return(credential)
+      allow(Google::Cloud::PubSub::Credentials).to receive(:new).and_return(credential)
+      allow(NsClient.config).to receive(:project_id).and_return(FFaker::Lorem.characters)
+
+      client = instance_double NsClient::GooglePubsubClient
+      allow(NsClient).to receive(:pubsub_client).and_return(client)
+      expect(client).to receive(:deliver).with(message, topic: topic, create_time: creation_time).exactly(:once)
+      NsClient.deliver_pubsub(message, topic: topic, create_time: creation_time)
+    end
+
+    it "should call http client once when error raise and backup channel enabled" do
+      instance = instance_double NsClient::GooglePubsubClient
+
+      creation_time = Time.now
+      message = FFaker::Lorem::characters
+      topic = NsClient::Type::TOPICS.values.sample
+
+      allow(NsClient).to receive(:pubsub_client).and_return(instance)
+      allow(instance).to receive(:deliver).and_raise(StandardError)
+
+      expect(NsClient.http_client).to receive(:deliver).with(message, topic: topic).exactly(:once)
+
+      NsClient.deliver_pubsub(message, topic: topic, create_time: creation_time)
+    end
+  end
 end

@@ -92,8 +92,18 @@ RSpec.describe NsClient::Sms::RequestBuilder do
       expect(NsClient).to receive(:deliver_async).with(subject.request, topic: NsClient::Type::TOPICS[:sms])
     end
 
-    it 'calls NsClient.deliver with request object' do
+    it 'calls NsClient.deliver_async with request object' do
       subject.deliver_async
+    end
+  end
+
+  describe '#deliver_pubsub' do
+    before do
+      expect(NsClient).to receive(:deliver_pubsub).with(subject.request, topic: NsClient::Type::TOPICS[:sms])
+    end
+
+    it 'calls NsClient.deliver_pubsub with request object' do
+      subject.deliver_pubsub
     end
   end
 

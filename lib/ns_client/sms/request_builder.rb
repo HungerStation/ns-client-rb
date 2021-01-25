@@ -57,6 +57,11 @@ module NsClient::Sms
       NsClient.deliver_async(@request, topic: NsClient::Type::TOPICS[:sms])
     end
 
+    def deliver_pubsub
+      validate!
+      NsClient.deliver_pubsub(@request, topic: NsClient::Type::TOPICS[:sms])
+    end
+
     private
 
     def validate!

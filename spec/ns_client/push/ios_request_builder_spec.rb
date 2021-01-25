@@ -131,6 +131,16 @@ RSpec.describe NsClient::Push::IosRequestBuilder do
     end
   end
 
+  describe '#deliver_pubsub' do
+    before do
+      expect(NsClient).to receive(:deliver_pubsub).with(subject.request, topic: NsClient::Type::TOPICS[:push_ios])
+    end
+
+    it 'calls NsClient.deliver_pubsub with request object' do
+      subject.deliver_pubsub
+    end
+  end
+
   context 'when tokens is empty' do
     let(:tokens) { [] }
 
