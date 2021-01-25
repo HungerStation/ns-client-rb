@@ -11,10 +11,13 @@ require 'ns_client/missing_required_field'
 require 'ns_client/slack/request_builder'
 require 'ns_client/slack/attachment_builder'
 require 'ns_client/sms/request_builder'
+require 'ns_client/push/android_request_builder'
+require 'ns_client/push/ios_request_builder'
 
 ## proto schema
 require 'protos/notification/sms/sms_pb'
-require 'protos/notification/push/push_pb'
+require 'protos/notification/push/android_pb'
+require 'protos/notification/push/ios_pb'
 require 'protos/notification/slack/slack_pb'
 
 module NsClient

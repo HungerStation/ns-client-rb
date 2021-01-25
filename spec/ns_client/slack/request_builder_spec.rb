@@ -120,7 +120,7 @@ RSpec.describe NsClient::Slack::RequestBuilder do
     it 'appends new attachment' do
       expect {
         subject.add_attachment(attachment)
-    }.to change { subject.request.payload.attachments.size }.by 1
+      }.to change { subject.request.payload.attachments.size }.by 1
     end
   end
 
