@@ -80,11 +80,16 @@ message.sms_type = :DEFAULT
 message.payload = payload
 message.event_timestamp = Time.now
 
-## to deliver synchronously
+
+## to deliver synchronously (Kafka)
 NsClient.deliver(message, topic: NsClient::Type::TOPICS[:sms])
 
-## to deliver Asynchronously
+## to deliver Asynchronously (Kafka)
 NsClient.deliver_async(message, topic: NsClient::Type::TOPICS[:sms])
+
+## To Deliver using google pub sub
+NsClient.deliver_pubsub(message, topic: NsClient::Type::TOPICS[:sms])
+
 ```
 
 Or use the builder:
@@ -100,6 +105,8 @@ request_builder = NsClient::Slack::RequestBuilder.build.
   add_attachment(attachment_builder.attachment)
 request_builder.deliver
 # or builder.deliver_async
+# or Google pubsub using builder.deliver_pubsub
+
 ```
 
 ## Development
