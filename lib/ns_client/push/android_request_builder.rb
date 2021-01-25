@@ -75,6 +75,11 @@ module NsClient::Push
       NsClient.deliver_async(@request, topic: NsClient::Type::TOPICS[:push_android])
     end
 
+    def deliver_pubsub
+      validate!
+      NsClient.deliver_pubsub(@request, topic: NsClient::Type::TOPICS[:push_android])
+    end
+
     private
 
     def validate!
