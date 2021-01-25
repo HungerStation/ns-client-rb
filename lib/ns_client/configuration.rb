@@ -61,5 +61,6 @@ module NsClient
     ## google pubsub mininum config
     string :project_id, required: true
     string :credential
+    string :emulator_host
   end
 end

@@ -23,7 +23,8 @@ module NsClient
       @client ||= begin
         Google::Cloud::PubSub.new(
           project_id: config.project_id,
-          credentials: config.credential
+          credentials: config.credential,
+          emulator_host: config.emulator_host
         )
       end
     end
