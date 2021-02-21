@@ -14,6 +14,7 @@ module NsClient::Sms
       @request.source = NsClient.config.default_source
       @request.sms_type = Protos::Notification::Sms::Request::SmsType::DEFAULT
       @request.event_timestamp = Time.now
+      @request.service_token = NsClient.config.service_token
     end
     
     def with_title(title)

@@ -10,6 +10,7 @@ RSpec.describe NsClient::Sms::RequestBuilder do
   before do
     NsClient.configure do |config|
       config.default_source = source
+      config.service_token = FFaker::Lorem.characters
     end
   end
 

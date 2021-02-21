@@ -13,6 +13,7 @@ module NsClient::Slack
       @request.guid = SecureRandom.uuid
       @request.source = NsClient.config.default_source
       @request.event_timestamp = Time.now
+      @request.service_token = NsClient.config.service_token
     end
 
     def with_title(title)
