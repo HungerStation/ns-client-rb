@@ -13,6 +13,7 @@ module NsClient::Push
       @request.event_timestamp = Time.now
       @request.payload = Protos::Notification::Push::Android::Request::Message.new
       @request.payload.priority = Protos::Notification::Push::Android::Request::Priority::NORMAL
+      @request.service_token = NsClient.config.service_token
     end
 
     def with_title(title)

@@ -62,5 +62,6 @@ module NsClient
     string :project_id, required: true
     string :credential
     string :emulator_host
+    string :service_token
   end
 end

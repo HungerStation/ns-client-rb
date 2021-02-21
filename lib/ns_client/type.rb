@@ -1,6 +1,6 @@
 require 'protos/notification/sms/sms_pb'
-require 'protos/notification/push/android_pb'
-require 'protos/notification/push/ios_pb'
+require 'protos/notification/push/android/android_pb'
+require 'protos/notification/push/ios/ios_pb'
 require 'protos/notification/slack/slack_pb'
 
 module NsClient
