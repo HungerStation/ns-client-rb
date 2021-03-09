@@ -25,11 +25,9 @@ RSpec.describe NsClient::Email::RequestBuilder do
       with_subject(mail_subject).
       with_content_message(content_message).
       with_content_headers(content_headers).
-      with_from_name(from_name).
-      with_from_email(from_email).
+      with_from(from_name, from_email).
       add_to(to_name, to_email).
-      with_reply_to_name(reply_to_name).
-      with_reply_to_email(reply_to_email).
+      with_reply_to(reply_to_name, reply_to_email).
       with_guid(guid)
   end
 
@@ -99,25 +97,19 @@ RSpec.describe NsClient::Email::RequestBuilder do
     end
   end
 
-  describe '#with_from_name' do
+  describe '#with_from' do
     it 'sets sender name' do
       expect(subject.request.from.name).to eq from_name
     end
-  end
-
-  describe '#with_from_email' do
     it 'sets sender email' do
       expect(subject.request.from.email).to eq from_email
     end
   end
 
-  describe '#with_reply_to_name' do
+  describe '#with_reply_to' do
     it 'sets reply to person name' do
       expect(subject.request.replyTo.name).to eq reply_to_name
     end
-  end
-
-  describe '#with_reply_to_email' do
     it 'sets reply to person email' do
       expect(subject.request.replyTo.email).to eq reply_to_email
     end

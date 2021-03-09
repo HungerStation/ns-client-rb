@@ -47,12 +47,8 @@ module NsClient::Email
       self
     end
 
-    def with_from_name(name)
+    def with_from(name, email)
       @request.from.name = name
-      self
-    end
-
-    def with_from_email(email)
       @request.from.email = email
       self
     end
@@ -65,12 +61,8 @@ module NsClient::Email
       self
     end
 
-    def with_reply_to_name(name)
+    def with_reply_to(name, email)
       @request.replyTo.name = name
-      self
-    end
-
-    def with_reply_to_email(email)
       @request.replyTo.email = email
       self
     end
