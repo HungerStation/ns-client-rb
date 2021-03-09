@@ -2,6 +2,7 @@ require 'protos/notification/sms/sms_pb'
 require 'protos/notification/push/android/android_pb'
 require 'protos/notification/push/ios/ios_pb'
 require 'protos/notification/slack/slack_pb'
+require 'protos/notification/email/email_pb'
 
 module NsClient
   module Type
@@ -26,7 +27,7 @@ module NsClient
       push_android: Protos::Notification::Push::Android::Request,
       push_ios: Protos::Notification::Push::Ios::Request,
       slack: Protos::Notification::Slack::Request,
-      email: 'TODO'
+      email: Protos::Notification::Email::Request
     }.freeze
 
   end
