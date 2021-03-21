@@ -43,6 +43,7 @@ module NsClient
     ## for google pubsub transaction
     def deliver_pubsub(value, topic:, **options)
       pubsub_client.deliver(value, topic: topic, **options)
+      logger.info(topic: topic, source: value.source, transport: 'pubsub'.freeze, guid: value.guid)
     rescue StandardError => e
       logger.error(details: "Message for #{topic} dropped due to #{e.message}")
       http_client.deliver(value, topic: topic) if config.backup_channel

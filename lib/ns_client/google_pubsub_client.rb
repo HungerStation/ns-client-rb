@@ -5,7 +5,7 @@ require 'google/cloud/pubsub'
 module NsClient
   class GooglePubsubClient
     include NsClient::Type
-    
+
     attr_reader :config, :logger
 
     def initialize(config, logger)
@@ -28,10 +28,10 @@ module NsClient
         )
       end
     end
-    
+
     private
 
-    # validate topic 
+    # validate topic
     # @param topic [String]
     def validate_topic(topic)
       raise NsClient::NotSupportedTopic, "topic #{topic} is not supported" unless TOPICS.values.include? topic.to_s
