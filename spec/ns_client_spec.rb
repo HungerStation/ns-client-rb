@@ -86,7 +86,7 @@ RSpec.describe NsClient do
       allow(instance).to receive(:shutdown)
 
       expect(http_client).to receive(:deliver).with(message, topic: topic).exactly(:once)
-      
+
       NsClient.deliver_async(message, topic: topic, create_time: creation_time)
       NsClient.shutdown
     end
@@ -100,14 +100,16 @@ RSpec.describe NsClient do
 
   describe "pubsub_client" do
     it 'should return NsClient::GooglePubsubClient' do
-      expect(NsClient.pubsub_client.is_a? NsClient::GooglePubsubClient).to eq true    
+      expect(NsClient.pubsub_client.is_a? NsClient::GooglePubsubClient).to eq true
     end
   end
 
   describe ".deliver_pubsub" do
     it "delivers the message using .deliver_pubsub" do
       creation_time = Time.now
-      message = FFaker::Lorem::characters
+      message = Protos::Notification::Slack::Request.new
+      message.source = 'platform-backend'
+      message.guid = SecureRandom.uuid
       topic = NsClient::Type::TOPICS.values.sample
 
       credential = instance_double Google::Auth::Credentials
@@ -125,7 +127,9 @@ RSpec.describe NsClient do
       instance = instance_double NsClient::GooglePubsubClient
 
       creation_time = Time.now
-      message = FFaker::Lorem::characters
+      message = Protos::Notification::Email::Request.new
+      message.source = 'platform-backend'
+      message.guid = SecureRandom.uuid
       topic = NsClient::Type::TOPICS.values.sample
 
       allow(NsClient).to receive(:pubsub_client).and_return(instance)
