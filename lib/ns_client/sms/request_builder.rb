@@ -3,7 +3,7 @@ require 'securerandom'
 module NsClient::Sms
   class RequestBuilder
     attr_reader :request
-    
+
     def self.build
       new
     end
@@ -16,7 +16,7 @@ module NsClient::Sms
       @request.event_timestamp = Time.now
       @request.service_token = NsClient.config.service_token
     end
-    
+
     def with_title(title)
       @request.title = title
       self
@@ -36,16 +36,24 @@ module NsClient::Sms
       @request.sms_type = type
       self
     end
-    
+
     def with_guid(guid)
       @request.guid = guid
       self
     end
 
-    def with_message(msg)
+    def with_payload(key, value)
       @request.payload ||= Google::Protobuf::Map.new(:string, :string)
-      @request.payload['message'] = msg
+      @request.payload[key.to_s] = value.to_s
       self
+    end
+
+    def with_message(msg)
+      with_payload('message', msg)
+    end
+
+    def as_test
+      with_payload('X-TEST', true)
     end
 
     def deliver
