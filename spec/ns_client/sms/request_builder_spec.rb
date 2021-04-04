@@ -78,6 +78,16 @@ RSpec.describe NsClient::Sms::RequestBuilder do
     end
   end
 
+  describe '#as_test' do
+    before do
+      subject.as_test
+    end
+
+    it 'sets test request flag to true' do
+      expect(subject.request.payload['X-TEST']).to eq 'true'
+    end
+  end
+
   describe '#deliver' do
     before do
       expect(NsClient).to receive(:deliver).with(subject.request, topic: NsClient::Type::TOPICS[:sms])
